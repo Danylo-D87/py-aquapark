@@ -1,6 +1,3 @@
-from abc import ABC
-
-
 class IntegerRange:
     def __init__(self, min_amount: int, max_amount: int) -> None:
         self.min_amount = min_amount
@@ -28,12 +25,13 @@ class IntegerRange:
 class Visitor:
     def __init__(self, name: str, age: int, weight: int, height: int) -> None:
         self.name = name
+        # Використовуємо дескриптор для перевірки
         self.age = age
         self.weight = weight
         self.height = height
 
 
-class SlideLimitationValidator(ABC):
+class SlideLimitationValidator:  # Видалено спадкування від ABC
     def __init__(self, age: int, weight: int, height: int) -> None:
         self.age = age
         self.weight = weight
@@ -61,6 +59,7 @@ class Slide:
 
     def can_access(self, visitor: Visitor) -> bool:
         try:
+            # Створюємо екземпляр для перевірки
             self.limitation_class(visitor.age, visitor.weight, visitor.height)
             return True
         except (TypeError, ValueError):
