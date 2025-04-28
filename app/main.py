@@ -1,3 +1,6 @@
+from abc import ABC, abstractmethod
+
+
 class IntegerRange:
     def __init__(self, min_amount: int, max_amount: int) -> None:
         self.min_amount = min_amount
@@ -31,11 +34,16 @@ class Visitor:
         self.height = height
 
 
-class SlideLimitationValidator:  # Видалено спадкування від ABC
+class SlideLimitationValidator(ABC):
     def __init__(self, age: int, weight: int, height: int) -> None:
+        # Використовуємо дескриптори для атрибутів
         self.age = age
         self.weight = weight
         self.height = height
+
+    @abstractmethod
+    def validate(self) -> bool:
+        pass
 
 
 class ChildrenSlideLimitationValidator(SlideLimitationValidator):
@@ -43,11 +51,31 @@ class ChildrenSlideLimitationValidator(SlideLimitationValidator):
     height = IntegerRange(80, 120)
     weight = IntegerRange(20, 50)
 
+    def validate(self) -> bool:
+        try:
+            # Перевірка значень
+            self.age = self.age
+            self.height = self.height
+            self.weight = self.weight
+            return True
+        except (TypeError, ValueError):
+            return False
+
 
 class AdultSlideLimitationValidator(SlideLimitationValidator):
     age = IntegerRange(14, 60)
     height = IntegerRange(120, 220)
     weight = IntegerRange(50, 120)
+
+    def validate(self) -> bool:
+        try:
+            # Перевірка значень
+            self.age = self.age
+            self.height = self.height
+            self.weight = self.weight
+            return True
+        except (TypeError, ValueError):
+            return False
 
 
 class Slide:
@@ -60,7 +88,9 @@ class Slide:
     def can_access(self, visitor: Visitor) -> bool:
         try:
             # Створюємо екземпляр для перевірки
-            self.limitation_class(visitor.age, visitor.weight, visitor.height)
-            return True
+            validator = self.limitation_class(visitor.age,
+                                              visitor.weight,
+                                              visitor.height)
+            return validator.validate()  # Викликаємо метод validate()
         except (TypeError, ValueError):
             return False
